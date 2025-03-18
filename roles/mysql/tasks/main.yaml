@@ -1,9 +1,6 @@
 - name: Configure MySQL server
   hosts: mysql
   become: yes
-  vars:
-    mysql_root_password: "MyStrongPassword" # Ensure to define this in secure way
-
   tasks:
   - name: Install MySQL libraries
     ansible.builtin.pip:
