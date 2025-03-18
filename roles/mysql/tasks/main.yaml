@@ -1,5 +1,8 @@
-- name: Configure MySQL server
+- name: configure mysql server
   hosts: mysql
+  become: yes
+  vars:
+    mysql_root_password: ExpenseApp@1
   tasks:
   - name: Install MySQL libraries
     ansible.builtin.pip:
@@ -14,29 +17,24 @@
       name: mysql-server
       state: installed
 
-  - name: Start and enable MySQL server
+  - name: start and enable mysql server
     ansible.builtin.service:
       name: mysqld
       state: started
       enabled: yes
 
-  - name: Connect to MySQL server
+  - name: connect to mysql server
     community.mysql.mysql_info:
       login_user: root
       login_password: "{{ mysql_root_password }}"
-      login_host: "mysql.trinath.online"
+      login_host: mysql.trinath.online
     register: mysql_info
     ignore_errors: false
 
-  - name: Print MySQL info
+  - name: print the output
     ansible.builtin.debug:
       msg: "MySQL info: {{ mysql_info }}"
 
-  - name: Set MySQL root password (if not set)
-    community.mysql.mysql_user:
-      name: root
-      host: localhost
-      password: "{{ mysql_root_password }}"
-      login_user: root
-      login_password: "{{ mysql_root_password }}"
-    when: mysql_info.failed is defined and mysql_info.failed == true
+  - name: setup root password
+    ansible.builtin.command: " mysql_secure_installation --set-root-pass {{ mysql_root_password }} "
+    when: mysql_info.failed is true
