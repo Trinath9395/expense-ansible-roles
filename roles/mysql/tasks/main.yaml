@@ -1,7 +1,5 @@
 - name: Configure MySQL server
   hosts: mysql
-  become: yes
-
   tasks:
   - name: Install MySQL libraries
     ansible.builtin.pip:
