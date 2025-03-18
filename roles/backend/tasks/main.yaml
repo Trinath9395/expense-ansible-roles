@@ -6,11 +6,11 @@
 
 - name: install nodejs
   ansible.builtin.package:
-    name: "{{ item }}"
+    name: '{{ item }}'
     state: present
   loop:
-  - nodejs
-  - mysql
+    - nodejs
+    - mysql
 
 - name: create expense user
   ansible.builtin.user:
@@ -41,7 +41,7 @@
 
 - name: Install dependencies
   tags:
-  - deployment
+    - deployment
   community.general.npm:
     path: /app
 
@@ -53,24 +53,24 @@
 
 - name: install python libs
   ansible.builtin.pip:
-    name: "{{ item }}"
+    name: '{{ item }}'
     executable: pip3.9
   loop:
-  - cryptography
-  - PyMySQL
+    - cryptography
+    - PyMySQL
 
 - name: import mysql data
   community.mysql.mysql_db:
     state: import
     name: all
-    login_user: "{{ MYSQL_USER }}"
-    login_password: "{{ MYSQL_PASSWORD }}"
-    login_host: "{{ MYSQL_HOST }}"
+    login_user: '{{ MYSQL_USER }}'
+    login_password: '{{ MYSQL_PASSWORD }}'
+    login_host: '{{ MYSQL_HOST }}'
     target: /app/schema/backend.sql
 
 - name: daemon reload and restart service
   tags:
-  - deployment
+    - deployment
   ansible.builtin.systemd_service:
     enabled: true
     state: restarted
